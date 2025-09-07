@@ -175,20 +175,14 @@ formSettings.addEventListener("submit", (event) => {
     cols = parseInt(formData.get("grid-width"), 10);
     rows = parseInt(formData.get("grid-height"), 10);
 
-
-
-    // Очистка предыдущего поля
     gridContainer.innerHTML = "";
     openCells = 0;
 
-    // Обновление размеров контейнера
     setupGrid(rows, cols, cellSize);
 
-    // Создание и отрисовка нового поля
     const newField = createField(rows, cols, mines);
     drawField(newField);
 
-    // Обновление счётчика мин
     updateMinesLeft();
 });
 
