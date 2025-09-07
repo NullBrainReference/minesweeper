@@ -1,27 +1,32 @@
 const gridContainer = document.getElementById("grid-container");
 const minesCounter = document.getElementById("mines-counter");
+const formSettings = document.getElementById("form-settings");
 
-const rows = 24;
-const cols = 24;
+let rows = 24;
+let cols = 24;
+
+let isOver = false;
 
 const cellSize = 18; // Size of each cell in pixels
 const gapSize = 2;
 
-const gridWidth = cols * cellSize + (cols - 1) * gapSize;
-const gridHeight = rows * cellSize + (rows - 1) * gapSize;
+// const gridWidth = cols * cellSize + (cols - 1) * gapSize;
+// const gridHeight = rows * cellSize + (rows - 1) * gapSize;
 
-gridContainer.style.maxWidth = `${gridWidth}px`;
-gridContainer.style.maxHeight = `${gridHeight}px`;
+// gridContainer.style.maxWidth = `${gridWidth}px`;
+// gridContainer.style.maxHeight = `${gridHeight}px`;
 
-gridContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-gridContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+// gridContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+// gridContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
-const minesCount = 50;
+let mines = 50;
 let openCells = 0;
 
 function createField(rows, cols, minesCount) {
     // Initialize the field with no mines
     const field = Array.from({ length: rows }, () => Array(cols).fill(0));
+    mines = minesCount;
+    isOver = false;
 
     // Place mines randomly
     let minesPlaced = 0;
@@ -63,14 +68,14 @@ function countMinesAround(field, x, y) {
 }
 
 function checkWinCondition() {
-    if ((rows * cols) - openCells === minesCount) {
+    if ((rows * cols) - openCells === mines) {
         alert("Congratulations! You win!");
     }
 }
 
 function updateMinesLeft() {
-    const minesRemaining = minesCount - openCells;
-    minesCounter.textContent = `Mines Left: ${minesRemaining}`;
+    const minesRemaining = (rows * cols) - openCells - mines;
+    minesCounter.textContent = `Left to open: ${minesRemaining}`;
 }
 
 function openSafe(field, clickedX, clickedY) {
@@ -116,8 +121,11 @@ function openSafe(field, clickedX, clickedY) {
 }
 
 function drawField(field) {
-    for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < cols; col++) {
+    const gridRows = field.length;
+    const grigCols = field[0].length;
+
+    for (let row = 0; row < gridRows; row++) {
+        for (let col = 0; col < grigCols; col++) {
             const cell = document.createElement("div");
             cell.classList.add("cell");
 
@@ -129,8 +137,12 @@ function drawField(field) {
             gridContainer.appendChild(cell);
 
             cell.addEventListener("click", (event) => {
+                if (isOver)
+                    return;
+
                 if (cell.dataset.mine === "true") {
                     cell.style.backgroundColor = "red"; // Indicate a mine was clicked
+                    isOver = true;
                     alert("Game Over! You clicked on a mine.");
                 } else {
                     openSafe(field, row, col);
@@ -143,6 +155,45 @@ function drawField(field) {
     }
 }
 
-const field = createField(rows, cols, minesCount);
+function setupGrid(rows, cols, cellSize) {
+    const gridWidth = cols * cellSize + (cols - 1) * gapSize;
+    const gridHeight = rows * cellSize + (rows - 1) * gapSize;
+
+    gridContainer.style.maxWidth = `${gridWidth}px`;
+    gridContainer.style.maxHeight = `${gridHeight}px`;
+
+    gridContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    gridContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+}
+
+formSettings.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    // Получаем значения из формы
+    const formData = new FormData(event.target);
+    mines = parseInt(formData.get("mines-amount"), 10);
+    cols = parseInt(formData.get("grid-width"), 10);
+    rows = parseInt(formData.get("grid-height"), 10);
+
+
+
+    // Очистка предыдущего поля
+    gridContainer.innerHTML = "";
+    openCells = 0;
+
+    // Обновление размеров контейнера
+    setupGrid(rows, cols, cellSize);
+
+    // Создание и отрисовка нового поля
+    const newField = createField(rows, cols, mines);
+    drawField(newField);
+
+    // Обновление счётчика мин
+    updateMinesLeft();
+});
+
+
+const field = createField(rows, cols, mines);
+setupGrid(cols, rows, cellSize);
 drawField(field);
 
