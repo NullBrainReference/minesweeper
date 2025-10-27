@@ -7,17 +7,9 @@ let cols = 24;
 
 let isOver = false;
 
-const cellSize = 18; // Size of each cell in pixels
+const cellSize = 18;
 const gapSize = 2;
 
-// const gridWidth = cols * cellSize + (cols - 1) * gapSize;
-// const gridHeight = rows * cellSize + (rows - 1) * gapSize;
-
-// gridContainer.style.maxWidth = `${gridWidth}px`;
-// gridContainer.style.maxHeight = `${gridHeight}px`;
-
-// gridContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-// gridContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
 let mines = 50;
 let openCells = 0;
