@@ -14,7 +14,7 @@ export default function Cell({ cell, onClick }) {
       style={{
         width: 24,
         height: 24,
-        backgroundColor: cell.isOpen ? "#ddd" : "#f3f3f3",
+        backgroundColor: cell.isOpen ? "#ccc" : "#f3f3f3",
         cursor: "pointer",
         fontSize: 12,
         userSelect: "none",
