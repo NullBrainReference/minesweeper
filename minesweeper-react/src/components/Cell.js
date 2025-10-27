@@ -10,7 +10,7 @@ export default function Cell({ cell, onClick }) {
   return (
     <div
       onClick={onClick}
-      className={`border d-flex align-items-center justify-content-center`}
+      className="border d-flex align-items-center justify-content-center"
       style={{
         width: 24,
         height: 24,

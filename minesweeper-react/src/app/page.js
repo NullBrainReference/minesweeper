@@ -6,11 +6,24 @@ import { createField } from "../models/field";
 import { saveGame, loadGame } from "../lib/storage";
 
 export default function Home() {
-  const [field, setField] = useState(() => loadGame() || createField(24, 24, 50));
+  const [field, setField] = useState(null);
   const [isOver, setIsOver] = useState(false);
 
+  // Initialize field client-side
   useEffect(() => {
-    saveGame(field);
+    const saved = loadGame();
+    if (saved) {
+      setField(saved);
+    } else {
+      setField(createField(24, 24, 50));
+    }
+  }, []);
+
+  // Save game whenever field changes
+  useEffect(() => {
+    if (field) {
+      saveGame(field);
+    }
   }, [field]);
 
   function revealCell(copy, r, c) {
@@ -74,6 +87,16 @@ export default function Home() {
 
       return copy;
     });
+  }
+
+  // Don’t render grid until field is ready
+  if (!field) {
+    return (
+      <div className="container py-4">
+        <h1 className="mb-4">Minesweeper</h1>
+        <p>Loading game…</p>
+      </div>
+    );
   }
 
   const total = field.length * field[0].length;
